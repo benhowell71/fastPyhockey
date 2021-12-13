@@ -28,6 +28,18 @@ from types import SimpleNamespace
 from IPython.display import display_html, display_json
 import io
 
+fr_stats = "http://www.stats.ffbs.fr/2021/division1/stats/lgplyrs.htm#leagp.anl"
+
+fr_page = rq.get(fr_stats)
+
+df = pd.read_html(fr_stats)
+
+pitch = df[3]
+pitch.columns = pitch.iloc[0]
+pitch = pitch[1:]
+
+pitch.sort_values(by = 'so', ascending=False)
+
 game_id = 368719
 
 def phf_pbp(game_id):
@@ -39,6 +51,10 @@ def phf_pbp(game_id):
     auth_ticket = 'ticket="4dM1QOOKk-PQTSZxW_zfXnOgbh80dOGK6eUb_MaSl7nUN0_k4LxLMvZyeaYGXQuLyWBOQhY8Q65k6_uwMu6oojuO"'
 
     r = rq.get(full_url, headers={'Authorization': auth_ticket})
+
+    r
+
+    pd.read_json(rt)
 
     content = js.loads(r.content)
     
@@ -58,7 +74,7 @@ def phf_pbp(game_id):
 
     df = r.content
 
-    pd.read_html(r.content)
+    
 
     df = pd.DataFrame.from_dict(rt, orient='index')
 
