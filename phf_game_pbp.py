@@ -27,3 +27,68 @@ import json as js
 from types import SimpleNamespace
 from IPython.display import display_html, display_json
 import io
+import http.client
+import urllib.request
+from urllib.error import URLError, HTTPError, ContentTooShortError
+import re
+import string
+
+game_id = 368719
+
+def phf_game_details(game_id):
+
+    base_url = "https://web.api.digitalshift.ca/partials/stats/game?game_id="
+    full_url = base_url + str(game_id)
+
+    auth_ticket = 'ticket="4dM1QOOKk-PQTSZxW_zfXnOgbh80dOGK6eUb_MaSl7nUN0_k4LxLMvZyeaYGXQuLyWBOQhY8Q65k6_uwMu6oojuO"'
+
+    raw = rq.get(full_url, headers={'Authorization': auth_ticket})
+    soup = bs(raw.content, 'html.parser')
+
+    pd.read_html(raw.text)
+
+    soup.find_all('.flex-row.flex-pcenter')
+
+    
+
+
+
+def phf_pbp(game_id):
+
+    base_url = 'https://web.api.digitalshift.ca/partials/stats/game/play-by-play?game_id='
+    full_url = base_url + str(game_id)
+
+    auth_ticket = 'ticket="4dM1QOOKk-PQTSZxW_zfXnOgbh80dOGK6eUb_MaSl7nUN0_k4LxLMvZyeaYGXQuLyWBOQhY8Q65k6_uwMu6oojuO"'
+
+    raw = rq.get(full_url, headers={'Authorization': auth_ticket})
+
+    soup = bs(raw.content, 'html.parser')
+
+    # soup.current_data
+
+    p = js.loads(raw.content)
+
+    raw.content[:50]
+    p[50:]
+
+    q = p['content']
+
+    # type(q)
+
+    data_list = pd.read_html(q)
+
+    np.size(data_list[0], axis=1)
+    np.size(data_list[1], axis=1)
+
+period = data_list[0]
+
+period = period.set_axis(['play_type', 'team', 'time', 'description'], axis = 1)
+
+period['scoring_team_abbrev'] = 'NaN'
+period['scoring_team_on_ice'] = 'NaN'
+period['defending_team_abbrev'] = 'NaN'
+period['defending_team_on_ice'] = 'NaN'
+
+tm = 'Boston PrideBOS'
+
+period['team'] = period.team.str.extract(r'(TOR|MIN|BOS|CTW|MET|BUF)', expand = True)
