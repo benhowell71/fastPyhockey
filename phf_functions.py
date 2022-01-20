@@ -1,81 +1,126 @@
-# regex expressions
-# need to check takeaway string for python compatibility
-away = "[:digit:] GvA|[:digit:] TkA|[:digit:] Blk"
-fill = "from| by|against|to| and|giveaway|Game|Behind|of |Served|served|Bench|bench"
-goalie = "Starting goalie|Pulled goalie|Returned goalie"
-fo = "faceoff won"
-ice = "Even Strength|Empty Net|Power Play|Extra Attacker|Short Handed"
-shots = "Snap shot|Wrist shot|Penalty Shot"
-reb = "blocked|saved|failed attempt"
-pen = "Holding the Stick|Holding|Tripping|Roughing|Hooking|Interference|Diving|Delay|Cross-Checking|Head Contact|Body Checking|Slashing|Check from Behind Misconduct|Checking from Behind|Checking|Ejection|Too Many Men|Delay of Game|Misconduct|Check|High-Sticking"
-type = "Minor|Major"
-# need to check score string
-score_string = "[:digit:] - [:digit:] [A-Z]+|[:digit:] - [:digit:]"
-shoot = "missed attempt against|scores against|Shootout|failed attempt"
-# need to check length of penalty string for python compatibility
-lgh = "[:digit:] mins|[0-9]+ mins"
-abbreviations = "TOR|MIN|BOS|CTW|MET|BUF"
-ne = "On Ice"
-
+from urllib import response
 import pandas as pd
 import numpy as np
-from bs4 import BeautifulSoup as bs
-from pandas.io import json
-import requests as rq
-from funcy import pluck
-import json as js
-from types import SimpleNamespace
-from IPython.display import display_html, display_json
-import io
+import csv
+from io import BytesIO
+import requests
 
-fr_stats = "http://www.stats.ffbs.fr/2021/division1/stats/lgplyrs.htm#leagp.anl"
+def phf_pbp(game_id = 368719):
+    """Load play-by-play data for the Premier Hockey Federation for a given game.
+    Example: 
+        `pbp = phf_pbp(game_id = 368719)`
+    Args:
+        game_id (int): Used to define different games. Recommend using `phf_games` to find the game_id of interest. Play-by-play data is available for 2016, 2020, 2021, and 2022.
+    Returns:
+        pd.DataFrame: Pandas dataframe containing play-by-play data for the requested game.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list
+    """
+    raw = 'https://raw.githubusercontent.com/saiemgilani/fastRhockey-data/main/phf/phf_play_by_play.csv'
+    pbp = pd.read_csv(raw)
+    game_pbp = pbp[pbp.game_id == game_id]
 
-fr_page = rq.get(fr_stats)
+    if len(game_pbp) == 0:
+        print("That is not a valid game ID, please try another.")
+        print("It is recommended to use `phf_games(season = 2022)` to pull game_ids that you are interested in.")
+        print("Play-by-play data is only available for the 2016, and 2020-2022 seasons.")
 
-df = pd.read_html(fr_stats)
+    return game_pbp
 
-pitch = df[3]
-pitch.columns = pitch.iloc[0]
-pitch = pitch[1:]
+phf_pbp(game_id=2)
 
-pitch.sort_values(by = 'so', ascending=False)
+# team = 'tor'
+def phf_games(season = 2022):
+    """Load game meta data for the Premier Hockey Federation for a given season.
+    Example: 
+        `season_data =  phf_games(season = 2022)`
+    Args:
+        season (int): Used to define different seasons. 2016 is the earliest available season.
+    Returns:
+        pd.DataFrame: Pandas dataframe containing game-meta data for the requested seasons.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list
+    """
+    if int(season) < 2016:
+        print("SeasonNotFoundError: Season cannot be less than 2016")
 
-game_id = 368719
+        # exit()
+        szn = []
+    else:
 
-def phf_pbp(game_id):
+        yr = str(season)
 
-    base_url = 'https://web.api.digitalshift.ca/partials/stats/game/play-by-play?game_id='
-
-    full_url = base_url + str(game_id)
-
-    auth_ticket = 'ticket="4dM1QOOKk-PQTSZxW_zfXnOgbh80dOGK6eUb_MaSl7nUN0_k4LxLMvZyeaYGXQuLyWBOQhY8Q65k6_uwMu6oojuO"'
-
-    r = rq.get(full_url, headers={'Authorization': auth_ticket})
-
-    r
-
-    pd.read_json(rt)
-
-    content = js.loads(r.content)
+        raw = 'https://raw.githubusercontent.com/saiemgilani/fastRhockey-data/main/phf/schedules/csv/phf_schedule_' + yr + '.csv'
+        sched = pd.read_csv(raw)
+        
+        szn = sched[sched.date_group.str.contains(yr)]
     
-    r.content[:100]
-    r.text[:100]
-    r.json()
+    return szn
 
-    rt = r.json()
-    print(rt)
+phf_games(season=2000)
 
-    soup = bs(r.content, 'html.parser')
-    bs(rt, 'html.parser')
+def phf_team_box(season = 2022, game_id = 420405):
+    """Load team boxscores for the Premier Hockey Federation for a given game in a given season.
+    Example: 
+        `team_box_scores = phf_team_box(season = 2022, game_id = 420405)`
+    Args:
+        season (int): Used to define different seasons. 2016 is the earliest available season.
+        game_id (int): Used to define different games. Use phf_games(season = 2022) to find proper game_id
+    Returns:
+        pd.DataFrame: Pandas dataframe containing team-box-score data for the requested game.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list. If the game_id is invalid, returns an empty list.
+    """
+    if season < 2016:
+        print("There is no data for the requested season.")
+        team_box = []
+    elif season >= 2016:
+        base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/team_box/csv/team_box_' + str(season) + '.csv.gz'
+        query = {'raw': 'true'}
+        respo = requests.get(base, params=query)
+        fp = BytesIO(respo.content)
 
-    tbl = soup.find()
+        box = pd.read_csv(fp, compression='gzip')
+        team_box = box[box.game_id == game_id]
 
-    pd.read_html(str(tbl))[0]
+    if len(team_box) == 0:
+        print("That is not a valid game ID, please try another.")
+        print("It is recommended to use `phf_games(season = 2022)` to pull game_ids that you are interested in.")
+        print("Player boxscore data is available for 2016-2022.")
 
-    df = r.content
+        team_box = []
 
-    
+    return team_box
 
-    df = pd.DataFrame.from_dict(rt, orient='index')
+def phf_player_box(season = 2022, game_id = 420405):
+    """Load player boxscores for the Premier Hockey Federation for a given game in a given season.
+    Example: 
+        `player_stats = phf_player_box(season = 2022, game_id = 420405)`
+    Args:
+        season (int): Used to define different seasons. 2016 is the earliest available season.
+        game_id (int): Used to define different games. Use phf_games(season = 2022) to find proper game_id
+    Returns:
+        pd.DataFrame: Pandas dataframe containing player-box-score data for the requested game.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list. If the game_id is invalid, returns an empty list.
+    """
+    if season < 2016:
+        print("There is no data for the requested season.")
+        game_box = []
+    elif season >= 2016:
+        base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/player_box/csv/player_box_' + str(season) + '.csv.gz'
+        query = {'raw': 'true'}
+        respo = requests.get(base, params=query)
+        fp = BytesIO(respo.content)
 
-    pd.read_csv(io.StringIO(df.decode('utf-8')))
+        box = pd.read_csv(fp, compression='gzip')
+        game_box = box[box.game_id == game_id]
+
+    if len(game_box) == 0:
+        print("That is not a valid game ID, please try another.")
+        print("It is recommended to use `phf_games(season = 2022)` to pull game_ids that you are interested in.")
+        print("Player boxscore data is available for 2016-2022.")
+
+        game_box = []
+
+    return game_box

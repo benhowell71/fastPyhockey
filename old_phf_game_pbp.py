@@ -80,15 +80,15 @@ def phf_pbp(game_id):
     np.size(data_list[0], axis=1)
     np.size(data_list[1], axis=1)
 
-period = data_list[0]
+    period = data_list[0]
 
-period = period.set_axis(['play_type', 'team', 'time', 'description'], axis = 1)
+    period = period.set_axis(['play_type', 'team', 'time', 'description'], axis = 1)
 
-period['scoring_team_abbrev'] = 'NaN'
-period['scoring_team_on_ice'] = 'NaN'
-period['defending_team_abbrev'] = 'NaN'
-period['defending_team_on_ice'] = 'NaN'
+    period['scoring_team_abbrev'] = 'NaN'
+    period['scoring_team_on_ice'] = 'NaN'
+    period['defending_team_abbrev'] = 'NaN'
+    period['defending_team_on_ice'] = 'NaN'
 
-tm = 'Boston PrideBOS'
+    tm = 'Boston PrideBOS'
 
-period['team'] = period.team.str.extract(r'(TOR|MIN|BOS|CTW|MET|BUF)', expand = True)
+    period['team'] = period.team.str.extract(r'(TOR|MIN|BOS|CTW|MET|BUF)', expand = True)
