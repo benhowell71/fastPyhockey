@@ -28,17 +28,17 @@ from types import SimpleNamespace
 from IPython.display import display_html, display_json
 import io
 
-fr_stats = "http://www.stats.ffbs.fr/2021/division1/stats/lgplyrs.htm#leagp.anl"
+#fr_stats = "http://www.stats.ffbs.fr/2021/division1/stats/lgplyrs.htm#leagp.anl"
 
-fr_page = rq.get(fr_stats)
+#fr_page = rq.get(fr_stats)
 
-df = pd.read_html(fr_stats)
+#df = pd.read_html(fr_stats)
 
-pitch = df[3]
-pitch.columns = pitch.iloc[0]
-pitch = pitch[1:]
+#pitch = df[3]
+#pitch.columns = pitch.iloc[0]
+#pitch = pitch[1:]
 
-pitch.sort_values(by = 'so', ascending=False)
+#pitch.sort_values(by = 'so', ascending=False)
 
 game_id = 368719
 
@@ -54,7 +54,7 @@ def phf_pbp(game_id):
 
     r
 
-    pd.read_json(rt)
+    # pd.read_json(rt)
 
     content = js.loads(r.content)
     
