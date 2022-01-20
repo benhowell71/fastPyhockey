@@ -60,24 +60,67 @@ def phf_games(season = 2022):
 phf_games(season=2000)
 
 def phf_team_box(season = 2022, game_id = 420405):
-    base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/team_box/csv/team_box_' + str(season) + '.csv.gz'
-    query = {'raw': 'true'}
-    respo = requests.get(base, params=query)
-    fp = BytesIO(respo.content)
+    """Load team boxscores for the Premier Hockey Federation for a given game in a given season.
+    Example: 
+        `team_box_scores = phf_team_box(season = 2022, game_id = 420405)`
+    Args:
+        season (int): Used to define different seasons. 2016 is the earliest available season.
+        game_id (int): Used to define different games. Use phf_games(season = 2022) to find proper game_id
+    Returns:
+        pd.DataFrame: Pandas dataframe containing team-box-score data for the requested game.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list. If the game_id is invalid, returns an empty list.
+    """
+    if season < 2016:
+        print("There is no data for the requested season.")
+        team_box = []
+    elif season >= 2016:
+        base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/team_box/csv/team_box_' + str(season) + '.csv.gz'
+        query = {'raw': 'true'}
+        respo = requests.get(base, params=query)
+        fp = BytesIO(respo.content)
 
-    box = pd.read_csv(fp, compression='gzip')
-    team_box = box[box.game_id == game_id]
+        box = pd.read_csv(fp, compression='gzip')
+        team_box = box[box.game_id == game_id]
+
+    if len(team_box) == 0:
+        print("That is not a valid game ID, please try another.")
+        print("It is recommended to use `phf_games(season = 2022)` to pull game_ids that you are interested in.")
+        print("Player boxscore data is available for 2016-2022.")
+
+        team_box = []
 
     return team_box
 
 def phf_player_box(season = 2022, game_id = 420405):
+    """Load player boxscores for the Premier Hockey Federation for a given game in a given season.
+    Example: 
+        `player_stats = phf_player_box(season = 2022, game_id = 420405)`
+    Args:
+        season (int): Used to define different seasons. 2016 is the earliest available season.
+        game_id (int): Used to define different games. Use phf_games(season = 2022) to find proper game_id
+    Returns:
+        pd.DataFrame: Pandas dataframe containing player-box-score data for the requested game.
+    Raises:
+        Error: If `season` is less than 2016. If `season` < 2016, phf_games returns an empty list. If the game_id is invalid, returns an empty list.
+    """
+    if season < 2016:
+        print("There is no data for the requested season.")
+        game_box = []
+    elif season >= 2016:
+        base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/player_box/csv/player_box_' + str(season) + '.csv.gz'
+        query = {'raw': 'true'}
+        respo = requests.get(base, params=query)
+        fp = BytesIO(respo.content)
 
-    base = 'https://github.com/saiemgilani/fastRhockey-data/blob/main/phf/player_box/csv/player_box_' + str(season) + '.csv.gz'
-    query = {'raw': 'true'}
-    respo = requests.get(base, params=query)
-    fp = BytesIO(respo.content)
+        box = pd.read_csv(fp, compression='gzip')
+        game_box = box[box.game_id == game_id]
 
-    box = pd.read_csv(fp, compression='gzip')
-    game_box = box[box.game_id == game_id]
+    if len(game_box) == 0:
+        print("That is not a valid game ID, please try another.")
+        print("It is recommended to use `phf_games(season = 2022)` to pull game_ids that you are interested in.")
+        print("Player boxscore data is available for 2016-2022.")
+
+        game_box = []
 
     return game_box
