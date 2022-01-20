@@ -27,8 +27,6 @@ def phf_pbp(game_id = 368719):
 
     return game_pbp
 
-phf_pbp(game_id=2)
-
 # team = 'tor'
 def phf_games(season = 2022):
     """Load game meta data for the Premier Hockey Federation for a given season.
@@ -56,8 +54,6 @@ def phf_games(season = 2022):
         szn = sched[sched.date_group.str.contains(yr)]
     
     return szn
-
-phf_games(season=2000)
 
 def phf_team_box(season = 2022, game_id = 420405):
     """Load team boxscores for the Premier Hockey Federation for a given game in a given season.
