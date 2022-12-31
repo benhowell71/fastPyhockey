@@ -52,7 +52,7 @@ def phf_pbp(game_id):
 
     r = rq.get(full_url, headers={'Authorization': auth_ticket})
 
-    r
+    r.content
 
     # pd.read_json(rt)
 
@@ -66,7 +66,7 @@ def phf_pbp(game_id):
     print(rt)
 
     soup = bs(r.content, 'html.parser')
-    bs(rt, 'html.parser')
+    bs(content, 'html.parser')
 
     tbl = soup.find()
 
