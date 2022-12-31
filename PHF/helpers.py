@@ -57,3 +57,20 @@ FINAL_STAT_COLUMNS = [
     'takeaways',
     'giveaways',
 ]
+
+STANDINGS_COLS = [
+    'team_name',
+    'gp',
+    'wins',
+    'losses',
+    'ties',
+    'points',
+    'regulation_wins',
+    'overtime_wins',
+    'shootout_wins',
+    'goals_scored',
+    'goals_allowed',
+    'goal_differential',
+    'penalty_minutes',
+    'next_game',
+]
