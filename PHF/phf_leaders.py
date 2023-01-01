@@ -10,7 +10,9 @@ from datetime import datetime
 
 from PHF.helpers import (
     STAT_COLUMNS,
-    FINAL_STAT_COLUMNS
+    FINAL_STAT_COLUMNS,
+    GOALIE_COL,
+    FINAL_GOALIE_COLUMNS
 )
 
 def phf_leaders(player_type: str, season: int, season_type = 'Regular Season') -> pd.DataFrame:
@@ -57,17 +59,36 @@ def phf_leaders(player_type: str, season: int, season_type = 'Regular Season') -
 
         stats['Name'] = stats.Name.str.replace("#\w+", "")
 
-        stats.columns = STAT_COLUMNS
-        stats = stats.merge(info, how='left', on='player_name')
+        if player_type == 'players':
 
-        stats[['faceoff_won', 'faceoff_lost']] = stats.faceoff_record.str.split(' - ', expand=True)
+            stats.columns = STAT_COLUMNS
+            stats = stats.merge(info, how='left', on='player_name')
 
-        stats['season'] = season
-        stats['season_id'] = season_id
-        stats['division_id'] = league_id
-        stats['league'] = 'PHF'
+            stats[['faceoff_won', 'faceoff_lost']] = stats.faceoff_record.str.split(' - ', expand=True)
 
-        stats = stats[FINAL_STAT_COLUMNS]
+            stats['season'] = season
+            stats['season_id'] = season_id
+            stats['division_id'] = league_id
+            stats['league'] = 'PHF'
+
+            stats = stats[FINAL_STAT_COLUMNS]
+        elif player_type == 'goalies':
+
+            stats[['minutes', 'seconds']] = stats.MP.str.split(':', expand=True)
+            stats['minutes_played'] = np.round(stats['seconds'].astype(int) / 60, 2) + stats['minutes'].astype(int)
+
+            stats.columns = GOALIE_COL
+            stats = stats.merge(info, how='left', on='player_name')
+
+            stats['season'] = season
+            stats['season_id'] = season_id
+            stats['division_id'] = league_id
+            stats['league'] = 'PHF'
+            stats['position'] = 'G'
+
+            stats = stats[FINAL_GOALIE_COLUMNS]
+        else:
+            print(f'{datetime.now()}: Invalid arguments or season; please try a season from 2016 onwards.\n I.e. If you want data for the 2015-2016 season, please enter 2016 as the season. And enter either players or goalies.')
 
         return stats
     except:

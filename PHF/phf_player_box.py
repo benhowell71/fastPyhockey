@@ -84,15 +84,20 @@ def phf_player_box(game_id: int):
             'GA': 'goals_allowed',
             'Sv': 'saves',
             'Sv%': 'save_pct',
-            'MP': 'minutes_played',
+            # 'MP': 'minutes_played',
             'PIM': 'penalty_minutes',
             'G': 'goals',
             'A': 'assists'
         })
 
-        goalies = goalies[['player_name', 'player_id', 'team', 'jersey', 'shots_against',
-                    'goals_allowed', 'saves', 'save_pct', 'minutes_played', 'penalty_minutes',
-                    'goals', 'assists']]
+        goalies[['minutes', 'seconds']] = goalies.MP.str.split(':', expand=True)
+        goalies['minutes_played'] = np.round(goalies['seconds'].astype(int) / 60, 2) + goalies['minutes'].astype(int)
+        goalies['time_on_ice'] = goalies.MP
+
+        goalies['game_id'] = game_id
+
+        goalies = goalies[['player_name', 'player_id', 'team', 'jersey', 'game_id', 'time_on_ice', 'minutes_played', 
+                    'shots_against', 'saves', 'goals_allowed', 'save_pct', 'penalty_minutes', 'goals', 'assists']]
 
         return [skaters, goalies]
     
