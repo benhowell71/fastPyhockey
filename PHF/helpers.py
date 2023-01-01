@@ -25,6 +25,30 @@ STAT_COLUMNS = [
     'shots',
 ]
 
+GAME_STAT_COLUMNS = [
+    'jersey',
+    'player_name',
+    'position',
+    'goals',
+    'assists',
+    'points',
+    'penalty_minutes',
+    'plus_minus',
+    'shots_on_goal',
+    'blocks',
+    'giveaways',
+    'takeaways',
+    'faceoff_record',
+    'faceoff_win_pct',
+    'power_play_goal',
+    'short_hand_goal',
+    'shots_blocked',
+    'shots',
+    'faceoff_won',
+    'faceoff_lost',
+    'team',
+]
+
 FINAL_STAT_COLUMNS = [
     'player_name',
     'player_id',
@@ -58,6 +82,33 @@ FINAL_STAT_COLUMNS = [
     'giveaways',
 ]
 
+GAME_FINAL_STAT_COLUMNS = [
+    'player_name',
+    'player_id',
+    'jersey',
+    'team',
+    'position',
+    'game_id',
+    'goals',
+    'assists',
+    'points',
+    'shots',
+    'shots_blocked',
+    'shots_on_goal',
+    'shot_pct',
+    'power_play_goal',
+    'short_hand_goal',
+    'plus_minus',
+    'faceoff_record',
+    'faceoff_win_pct',
+    'faceoff_won',
+    'faceoff_lost',
+    'blocks',
+    'penalty_minutes',
+    'takeaways',
+    'giveaways',
+]
+
 STANDINGS_COLS = [
     'team_name',
     'gp',
@@ -73,4 +124,31 @@ STANDINGS_COLS = [
     'goal_differential',
     'penalty_minutes',
     'next_game',
+]
+
+ROSTER_NAMES = [
+    'jersey',
+    'name',
+    'position',
+    'height',
+    'home_town',
+    'player_name',
+    'player_id',
+    'player_photo',
+    'is_captain',
+    'feet', 
+    'inches'
+]
+
+ROSTER_COLUMNS = [
+    'player_name',
+    'player_id',
+    'jersey',
+    'position',
+    'height',
+    'feet', 
+    'inches',
+    'home_town',
+    'is_captain',
+    'player_photo'
 ]
