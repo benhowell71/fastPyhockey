@@ -261,3 +261,23 @@ TEAM_GOALIE_COLS = [
     'minutes_played',
     'team'
 ]
+
+START_NAMES = ["team", "period_1_scoring", "total_scoring"]
+IN_PROG_NAMES = ["team","period_1_scoring","period_2_scoring", "total_scoring"]
+REG_NAMES = ["team","period_1_scoring","period_2_scoring",
+                "period_3_scoring", "total_scoring"]
+OT_ONLY_NAMES = ["team","period_1_scoring","period_2_scoring",
+                    "period_3_scoring", "overtime_scoring",
+                    "total_scoring"]
+SHOOTOUT_SCORING_INIT_NAMES = ["team","period_1_scoring","period_2_scoring",
+                    "period_3_scoring", "overtime_scoring",
+                    "shootout_made_scoring",  "total_scoring", "shootout_missed_scoring"]
+SHOOTOUT_NAMES = ["team","period_1_scoring","period_2_scoring",
+                    "period_3_scoring", "overtime_scoring",
+                    "shootout_made_scoring", "shootout_missed_scoring", "total_scoring"]
+SHOOTOUT_SHOT_INIT_NAMES = ["team","period_1_shots","period_2_shots",
+                            "period_3_shots", "overtime_shots", "total_shots",
+                            "shootout_made_shots","shootout_missed_shots"]
+SHOOTOUT_SHOT_NAMES = ["team","period_1_shots","period_2_shots",
+                        "period_3_shots", "overtime_shots",
+                        "shootout_made_shots","shootout_missed_shots", "total_shots"]
