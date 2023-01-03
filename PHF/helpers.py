@@ -137,7 +137,8 @@ ROSTER_NAMES = [
     'player_photo',
     'is_captain',
     'feet', 
-    'inches'
+    'inches',
+    'date_of_birth'
 ]
 
 ROSTER_COLUMNS = [
@@ -145,6 +146,10 @@ ROSTER_COLUMNS = [
     'player_id',
     'jersey',
     'position',
+    'date_of_birth',
+    'season',
+    'team',
+    'team_id',
     'height',
     'feet', 
     'inches',

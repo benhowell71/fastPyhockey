@@ -11,7 +11,7 @@ from phf.helpers import STANDINGS_COLS
 
 def phf_standings(season: int) -> pd.DataFrame:
 
-    logos = pd.read_csv('PHF/logos.csv')
+    logos = pd.read_csv('phf/logos.csv')
 
     lg_info = phf_league_info(season=season)
     lg = lg_info[0]
@@ -19,25 +19,35 @@ def phf_standings(season: int) -> pd.DataFrame:
     season_id = season_df.season_id.item()
     league_id = lg_info[3] # 13893 for 2023
     base_url = "https://web.api.digitalshift.ca/partials/stats/standings/table?division_id=" + str(league_id) + "&league_toggle=division&season_id="
+    # base_url = "https://web.api.digitalshift.ca/partials/stats/filters?type=season&id=4667&league_toggle=division"
     full_url = base_url + str(season_id)
 
     payload = {
         'Authorization': 'ticket="4dM1QOOKk-PQTSZxW_zfXnOgbh80dOGK6eUb_MaSl7nUN0_k4LxLMvZyeaYGXQuLyWBOQhY8Q65k6_uwMu6oojuO"'
     }
 
+    if season in [2020, 2023]:
+        n = 3
+    else:
+        n = 0
+
     try:
         res = requests.get(full_url, headers=payload)
         data = json.loads(res.content.decode('utf-8'))
         soup = BeautifulSoup(data['content'], 'html.parser')
-        tbody = soup.find_all('table')[0]
 
+        tbody = soup.find_all('table')[n]
         standings = pd.read_html(str(tbody))[0]
+        # standings
+
         standings['Team'] = standings.Team.str.replace("[0-9]+", "")
         # standings['team_abbrev'] = standings.Team.str[-3:]
         standings['Team'] = standings.Team.str[:-3]
-
         standings.columns = STANDINGS_COLS
+        standings['season'] = season
+        standings['team_name'] = np.where(standings.team_name == 'Toronto Toronto', 'Toronto Six', standings.team_name)
         standings = standings.merge(logos, how='left', left_on='team_name', right_on='full_team_name')
+        standings['league_id'] = league_id
 
         return standings
     except:

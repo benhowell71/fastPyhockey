@@ -14,6 +14,7 @@ def phf_league_info(season: int) -> List:
     season_id = phf_get_season_id(season=season)
 
     base_url = "https://web.api.digitalshift.ca/partials/stats/filters?type=season&id="
+    # base_url = "https://web.api.digitalshift.ca/partials/stats/filters?type=season&id=1950&league_toggle=division"
     full_url = base_url + str(season_id)
 
     payload = {
@@ -23,10 +24,8 @@ def phf_league_info(season: int) -> List:
     try:
         res = requests.get(full_url, headers=payload)
         data = json.loads(res.content.decode('utf-8'))
-
-        # for x in data:
-        #     print(x)
-
+        for x in data:
+            print(x)
         league_info = []
 
         years = []
@@ -51,12 +50,20 @@ def phf_league_info(season: int) -> List:
             years.append(year)
 
         league = pd.DataFrame(years)
+        # take ID from data['division']['options']
         divisions = pd.DataFrame(data['division']['options'])
 
         if season == 2023:
-            division_id = 13893
+            division_id = divisions[divisions.name == 'PHF'].id.unique()[0]
+        elif season == 2020:
+            division_id = divisions[divisions.name == 'NWHL'].id.unique()[0]
         else:
             division_id = pd.DataFrame(data['team']['options']).division_id.unique()[0]
+
+        if 'team' in data:
+            teams = pd.DataFrame(data['team']['options'])
+        else:
+            teams = pd.DataFrame()
         # for x in data:
         #     print(x)
         # league = data['league']['options']
@@ -64,7 +71,7 @@ def phf_league_info(season: int) -> List:
         officials = pd.DataFrame(data['official']['options'])
         # data['bracket']['options']
 
-        league_info = [league, divisions, officials, division_id]
+        league_info = [league, divisions, officials, division_id, teams]
 
         return league_info
 
