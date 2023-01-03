@@ -49,6 +49,14 @@ def phf_standings(season: int) -> pd.DataFrame:
         standings = standings.merge(logos, how='left', left_on='team_name', right_on='full_team_name')
         standings['league_id'] = league_id
 
+        standings = standings[['team_name',
+            'league_id',
+            'season', 'team_id', 'gp', 'wins', 'losses', 'ties', 'points',
+            'regulation_wins', 'overtime_wins', 'shootout_wins', 'goals_scored',
+            'goals_allowed', 'goal_differential', 'penalty_minutes', 'next_game', 
+            'full_team_name', 'team_abbr', 'team_nick',
+            'team_location', 'team_color1', 'team_color2', 'team_logo']]
+
         return standings
     except:
         print(f'{datetime.now()}: Invalid arguments or season; please try a season from 2016 onwards.\n I.e. If you want data for the 2015-2016 season, please enter 2016 as the season.')

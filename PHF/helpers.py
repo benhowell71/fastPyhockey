@@ -128,17 +128,18 @@ STANDINGS_COLS = [
 
 ROSTER_NAMES = [
     'jersey',
-    'name',
+    'player_name',
     'position',
     'height',
+    'date_of_birth',
+    'country',
     'home_town',
-    'player_name',
+    'college',
     'player_id',
     'player_photo',
     'is_captain',
     'feet', 
     'inches',
-    'date_of_birth'
 ]
 
 ROSTER_COLUMNS = [
@@ -154,6 +155,8 @@ ROSTER_COLUMNS = [
     'feet', 
     'inches',
     'home_town',
+    'country',
+    'college',
     'is_captain',
     'player_photo'
 ]

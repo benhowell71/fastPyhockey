@@ -24,8 +24,8 @@ def phf_league_info(season: int) -> List:
     try:
         res = requests.get(full_url, headers=payload)
         data = json.loads(res.content.decode('utf-8'))
-        for x in data:
-            print(x)
+        # for x in data:
+            # print(x)
         league_info = []
 
         years = []
@@ -63,7 +63,11 @@ def phf_league_info(season: int) -> List:
         if 'team' in data:
             teams = pd.DataFrame(data['team']['options'])
         else:
-            teams = pd.DataFrame()
+            teams = pd.read_csv('phf/id_2020.csv')
+            teams = teams[teams.season == season]
+            teams['division_id'] = division_id
+        
+        teams['name'] = np.where(teams.name == 'Toronto Toronto', 'Toronto Six', teams.name)
         # for x in data:
         #     print(x)
         # league = data['league']['options']
