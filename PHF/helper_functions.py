@@ -139,4 +139,14 @@ def helper_phf_team_box(tables, game_id):
         'giveaways'
     ]].merge(shot, how='left', on='team').merge(score, how='left', on='team')
 
+    df['winner'] = np.where(df.total_scoring == df.total_scoring.max(), 1, 0)
+
+    df = df[['team', 'game_id', 'winner', 'successful_power_plays', 'power_play_opportunities',
+       'power_plays', 'penalty_minutes', 'faceoff_win_pct', 'blocks',
+       'takeaways', 'giveaways', 'period_1_shots', 'period_2_shots',
+       'period_3_shots', 'overtime_shots', 'shootout_made_shots',
+       'shootout_missed_shots', 'total_shots', 'period_1_scoring',
+       'period_2_scoring', 'period_3_scoring',
+       'overtime_scoring', 'shootout_made_scoring', 'shootout_missed_scoring', 'total_scoring']]
+
     return df

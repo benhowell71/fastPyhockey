@@ -7,8 +7,9 @@ import json
 from datetime import datetime
 from tqdm import tqdm
 
-from phf.phf_get_season_id import phf_get_season_id
-from phf.helper_functions import phf_get_player_photo
+# from phf.phf_get_season_id import phf_get_season_id
+# from phf.helper_functions import phf_get_player_photo
+from phf.phf_league_info import phf_league_info
 
 from phf.helpers import (
     TEAM_SKATER_COLS,
@@ -17,12 +18,17 @@ from phf.helpers import (
     FINAL_GOALIE_COLUMNS
 )
 
-def phf_roster(team: str) -> pd.DataFrame:
+def phf_team_stats(team: str, season: int) -> pd.DataFrame:
     # team = 'Boston Pride'
     # season_id = phf_get_season_id(season=season)
 
-    teams = pd.read_csv('PHF/logos.csv')
-    team_id = teams[teams.full_team_name == team].team_id.item()
+    # teams = pd.read_csv('phf/logos.csv')
+    # team_id = teams[teams.full_team_name == team].team_id.item()
+    lg = phf_league_info(season=season)
+    szn_id = lg[0]
+    szn_id = szn_id[szn_id.single_season == season].season_id.item()
+    teams = lg[4]
+    team_id = teams[teams.name == team].id.item()
 
     base_url = "https://web.api.digitalshift.ca/partials/stats/team/stats?team_id="
     full_url = base_url + str(team_id)
@@ -59,15 +65,20 @@ def phf_roster(team: str) -> pd.DataFrame:
         rs_skaters['season_type'] = 'regular_season'
         rs_goalies['season_type'] = 'regular_season'
 
-        if len(soup.find_all('table')) > 4:
+        if len(soup.find_all('table')) > 6:
             po_skaters = pd.read_html(str(soup.find_all('table')[5]))[0]
             po_goalies = pd.read_html(str(soup.find_all('table')[7]))[0]
 
-            po_skaters['season_type'] = ['playoffs']
-            po_goalies['season_type'] = ['playoffs']
+            po_skaters['season_type'] = 'playoffs'
+            po_goalies['season_type'] = 'playoffs'
 
             skaters = pd.concat([rs_skaters, po_skaters])
             goalies = pd.concat([rs_goalies, po_goalies])
+        elif len(soup.find_all('table')) == 6:
+            inactive = pd.read_html(str(soup.find_all('table')[5]))[0]
+            inactive['season_type'] = 'regular_season_inactive'
+            skaters = pd.concat([rs_skaters, inactive])
+            goalies = rs_goalies
         else:
             skaters = rs_skaters
             goalies = rs_goalies
@@ -81,9 +92,9 @@ def phf_roster(team: str) -> pd.DataFrame:
         skaters[['faceoff_won', 'faceoff_lost']] = skaters['FoW/L'].str.split(' - ', expand=True)
         skaters['team'] = team
         skaters.columns = TEAM_SKATER_COLS
-        skaters['season'] = np.nan
-        skaters['season_id'] = np.nan
-        skaters['division_id'] = np.nan
+        skaters['season'] = season
+        skaters['season_id'] = szn_id
+        skaters['division_id'] = teams.division_id.unique()[0]
         skaters['league'] = 'PHF'
 
         skaters = skaters[FINAL_STAT_COLUMNS]
@@ -95,9 +106,9 @@ def phf_roster(team: str) -> pd.DataFrame:
         goalies.columns = TEAM_GOALIE_COLS
         # goalies = goalies.merge(info, how='left', on='player_name')
 
-        goalies['season'] = np.nan
-        goalies['season_id'] = np.nan
-        goalies['division_id'] = np.nan
+        goalies['season'] = season
+        goalies['season_id'] = szn_id
+        goalies['division_id'] = teams.division_id.unique()[0]
         goalies['league'] = 'PHF'
         goalies['position'] = 'G'
 

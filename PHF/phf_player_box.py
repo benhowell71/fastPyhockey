@@ -66,38 +66,45 @@ def phf_player_box(game_id: int):
         skaters = pd.concat([home_skaters_df, away_skaters_df])
         goalies = pd.concat([home_goalies_df, away_goalies_df])
 
-        skaters['Name'] = skaters.Name.str.replace("#\w+", "")
+        if len(skaters) > 0:
+            skaters['Name'] = skaters.Name.str.replace("#\w+", "")
 
-        skaters.columns = GAME_STAT_COLUMNS
-        skaters = skaters.merge(info, how='left', on='player_name')
+            skaters.columns = GAME_STAT_COLUMNS
+            skaters = skaters.merge(info, how='left', on='player_name')
 
-        skaters['game_id'] = game_id
-        skaters['shot_pct'] = np.round(skaters['goals'] / skaters['shots_on_goal'], 3)
+            skaters['game_id'] = game_id
+            skaters['shot_pct'] = np.round(skaters['goals'] / skaters['shots_on_goal'], 3)
 
-        skaters = skaters[GAME_FINAL_STAT_COLUMNS]
+            skaters = skaters[GAME_FINAL_STAT_COLUMNS]
+        else:
+            skaters = pd.DataFrame(columns=GAME_FINAL_STAT_COLUMNS)
+        
+        if len(goalies) > 0:
+            goalies['Name'] = goalies.Name.str.replace("#\w+", "")
+            goalies = goalies.merge(info, how='left', left_on='Name', right_on='player_name')
+            goalies = goalies.rename(columns={
+                '#': 'jersey',
+                'SA': 'shots_against',
+                'GA': 'goals_allowed',
+                'Sv': 'saves',
+                'Sv%': 'save_pct',
+                # 'MP': 'minutes_played',
+                'PIM': 'penalty_minutes',
+                'G': 'goals',
+                'A': 'assists'
+            })
 
-        goalies['Name'] = goalies.Name.str.replace("#\w+", "")
-        goalies = goalies.merge(info, how='left', left_on='Name', right_on='player_name')
-        goalies = goalies.rename(columns={
-            '#': 'jersey',
-            'SA': 'shots_against',
-            'GA': 'goals_allowed',
-            'Sv': 'saves',
-            'Sv%': 'save_pct',
-            # 'MP': 'minutes_played',
-            'PIM': 'penalty_minutes',
-            'G': 'goals',
-            'A': 'assists'
-        })
+            goalies[['minutes', 'seconds']] = goalies.MP.str.split(':', expand=True)
+            goalies['minutes_played'] = np.round(goalies['seconds'].astype(int) / 60, 2) + goalies['minutes'].astype(int)
+            goalies['time_on_ice'] = goalies.MP
 
-        goalies[['minutes', 'seconds']] = goalies.MP.str.split(':', expand=True)
-        goalies['minutes_played'] = np.round(goalies['seconds'].astype(int) / 60, 2) + goalies['minutes'].astype(int)
-        goalies['time_on_ice'] = goalies.MP
+            goalies['game_id'] = game_id
 
-        goalies['game_id'] = game_id
-
-        goalies = goalies[['player_name', 'player_id', 'team', 'jersey', 'game_id', 'time_on_ice', 'minutes_played', 
-                    'shots_against', 'saves', 'goals_allowed', 'save_pct', 'penalty_minutes', 'goals', 'assists']]
+            goalies = goalies[['player_name', 'player_id', 'team', 'jersey', 'game_id', 'time_on_ice', 'minutes_played', 
+                        'shots_against', 'saves', 'goals_allowed', 'save_pct', 'penalty_minutes', 'goals', 'assists']]
+        else:
+            goalies = pd.DataFrame(columns=['player_name', 'player_id', 'team', 'jersey', 'game_id', 'time_on_ice', 'minutes_played', 
+                        'shots_against', 'saves', 'goals_allowed', 'save_pct', 'penalty_minutes', 'goals', 'assists'])
 
         return [skaters, goalies]
     

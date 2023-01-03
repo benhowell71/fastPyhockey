@@ -66,6 +66,7 @@ def phf_leaders(player_type: str, season: int, season_type = 'Regular Season') -
 
             stats[['faceoff_won', 'faceoff_lost']] = stats.faceoff_record.str.split(' - ', expand=True)
 
+            stats['season_type'] = season_type.lower().replace('+', '_')
             stats['season'] = season
             stats['season_id'] = season_id
             stats['division_id'] = league_id
@@ -80,6 +81,7 @@ def phf_leaders(player_type: str, season: int, season_type = 'Regular Season') -
             stats.columns = GOALIE_COL
             stats = stats.merge(info, how='left', on='player_name')
 
+            stats['season_type'] = season_type.lower().replace('+', '_')
             stats['season'] = season
             stats['season_id'] = season_id
             stats['division_id'] = league_id
