@@ -1,4 +1,4 @@
-from PHF.phf_league_info import phf_league_info
+from phf.phf_league_info import phf_league_info
 
 import pandas as pd
 import requests
@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 
-from PHF.helpers import (
+from phf.helpers import (
     STAT_COLUMNS,
     FINAL_STAT_COLUMNS,
     GOALIE_COL,

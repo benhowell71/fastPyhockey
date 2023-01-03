@@ -8,7 +8,7 @@ from datetime import datetime
 
 from typing import List
 
-from PHF.phf_get_season_id import phf_get_season_id
+from phf.phf_get_season_id import phf_get_season_id
 
 def phf_league_info(season: int) -> List:
     season_id = phf_get_season_id(season=season)

@@ -281,3 +281,15 @@ SHOOTOUT_SHOT_INIT_NAMES = ["team","period_1_shots","period_2_shots",
 SHOOTOUT_SHOT_NAMES = ["team","period_1_shots","period_2_shots",
                         "period_3_shots", "overtime_shots",
                         "shootout_made_shots","shootout_missed_shots", "total_shots"]
+
+PHF_SCHEDULE = ['type', 'id', 'league_id', 'season_id', 'tournament_id', 'game_id', 'game_date',
+       'winner', 'attendance', 'home_team_id', 'home_team',
+       'home_team_short', 'home_team_logo_url', 'away_team_id', 'away_team',
+       'away_team_short', 'away_team_logo_url', 'home_division_id',
+       'home_division', 'away_division_id', 'away_division', 'home_score',
+       'away_score', 'facility_id', 'facility', 'facility_address', 'rink_id',
+       'rink', 'game_type',
+       'number', 'datetime', 'datetime_tz', 'time_zone', 'time_zone_abbr',
+       'updated_at', 'created_at', 'notes', 'status', 'overtime', 'shootout',
+       'allow_players', 'tickets_url', 'watch_live_url', 'external_url',
+       'has_play_by_play', 'highlight_color']

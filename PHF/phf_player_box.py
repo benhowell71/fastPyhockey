@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 
-from PHF.phf_schedule import phf_schedule
-from PHF.helpers import (
+from phf.phf_schedule import phf_schedule
+from phf.helpers import (
     GAME_STAT_COLUMNS,
     GAME_FINAL_STAT_COLUMNS
 )

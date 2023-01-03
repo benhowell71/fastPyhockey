@@ -5,7 +5,7 @@ import re
 import pandas as pd
 import numpy as np
 
-from PHF.helpers import (
+from phf.helpers import (
     START_NAMES,
     IN_PROG_NAMES,
     REG_NAMES,

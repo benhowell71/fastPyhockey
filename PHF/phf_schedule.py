@@ -6,7 +6,10 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 
-from PHF.phf_get_season_id import phf_get_season_id
+from phf.phf_get_season_id import phf_get_season_id
+from phf.helpers import (
+    PHF_SCHEDULE
+)
 
 def phf_schedule(season: int):
     # season = 2023
@@ -44,6 +47,11 @@ def phf_schedule(season: int):
                         np.where(df.away_score > df.home_score, df.away_team,
                             np.where((df.home_team == df.away_team) & (df.status == 'Final'), 'Tie',
                                 np.where((df.home_team == df.away_team) & (df.status != 'Final'), '', np.nan))))
+
+        df = df.rename(columns={"date_group": "game_date"})
+        df = df[PHF_SCHEDULE]
+        # df.pop('winner')
+        # df.insert(6, 'winner', df.pop('winner'))
 
         return df
     

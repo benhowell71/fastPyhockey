@@ -7,10 +7,10 @@ import json
 from datetime import datetime
 from tqdm import tqdm
 
-from PHF.phf_get_season_id import phf_get_season_id
-from PHF.helper_functions import phf_get_player_photo
+from phf.phf_get_season_id import phf_get_season_id
+from phf.helper_functions import phf_get_player_photo
 
-from PHF.helpers import (
+from phf.helpers import (
     ROSTER_NAMES,
     ROSTER_COLUMNS
 )

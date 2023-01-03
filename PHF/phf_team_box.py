@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from tqdm import tqdm
 
-from PHF.helper_functions import helper_phf_team_box
+from phf.helper_functions import helper_phf_team_box
 
 # from PHF.phf_get_season_id import phf_get_season_id
 # from PHF.helper_functions import phf_get_player_photo

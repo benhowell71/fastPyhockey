@@ -6,8 +6,8 @@ from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 
-from PHF.phf_league_info import phf_league_info
-from PHF.helpers import STANDINGS_COLS
+from phf.phf_league_info import phf_league_info
+from phf.helpers import STANDINGS_COLS
 
 def phf_standings(season: int) -> pd.DataFrame:
 
