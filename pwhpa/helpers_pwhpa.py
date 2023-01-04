@@ -42,3 +42,37 @@ def process_game(game_info) -> pd.DataFrame:
     })
 
     return game_df
+
+def process_member(player_info):
+
+    jersey = player_info[0].text
+    name = player_info[1].text
+    player_link = player_info[1].find_all('a')[0].get('href')
+    names = name.split(' ')
+    first_name = names[0]
+    last_name = names[1]
+    link = player_info[2].find_all('a')[0].get('href')
+    team = link.replace('https://stats.pwhpa.com/team/', '')
+    team_id = team.replace('/', '')
+
+    position = player_info[3].text
+    dob = player_info[4].text
+    age = player_info[5].text
+    home_town = player_info[6].text
+    college = player_info[7].text
+
+    player_df = pd.DataFrame({
+        'player_name': [name],
+        'first_name': [first_name],
+        'last_name': [last_name],
+        'team_id': [team_id],
+        'position': [position],
+        'number': [jersey],
+        'date_of_birth': [dob],
+        'age': [age],
+        'home_town': [home_town],
+        'college': [college],
+        'player_page': [player_link]
+    })
+
+    return player_df
